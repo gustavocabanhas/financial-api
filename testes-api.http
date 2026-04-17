@@ -1,0 +1,219 @@
+### recebendo o pix da dulce
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 250.00,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### pagando o boleto do seguro
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 185.90,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### maldita taxa de manutenção da conta
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 45.50,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### pingou o salario amem 🙏
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 8500.00,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### debito automatico da parcela do apê na construtora
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 2250.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### guardando um trocado no cdb
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 1000.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### resgatando da poupança pra cobrir o fim do mes
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 500.00,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### mandando pix pra geovana
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 120.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### saque no caixa eletronico (precisava de dinheiro vivo em Salto)
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 200.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### fatura do cartao de credito (dor e sofrimento)
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 1450.75,
+  "type": "DESPESA",
+  "status": "PENDENTE"
+}
+
+### rendimento automatico da conta (12 conto kkkk)
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 12.40,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### comprando jogo na steam no debito
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 89.90,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### pix de um cara q comprou meus itens no grand chase
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 75.00,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### darf do leao (imposto de renda)
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 340.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### cpfl - conta de luz no debito automatico
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 215.30,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### reclamei no chat e estornaram a tarifa lol
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 45.50,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### ifood de sexta a noite
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 68.90,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### dividendos de fundos imobiliarios caindo
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 115.80,
+  "type": "RECEITA",
+  "status": "CONCLUIDO"
+}
+
+### ipva (chorando)
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 890.00,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### cobrou extrato impresso pq esqueci de ver no app
+POST http://localhost:8080/api/transactions
+Content-Type: application/json
+
+{
+  "amount": 3.50,
+  "type": "DESPESA",
+  "status": "CONCLUIDO"
+}
+
+### -------------------------------------------------
+### TESTES DAS FUNÇÕES NOVAS (GET, PUT, DELETE)
+### -------------------------------------------------
+
+### Listar todas as transações (para ver o banco cheio)
+//GET http://localhost:8080/api/transactions
+
+### Teste do PUT: Atualizar a fatura do cartão (ID 10) de PENDENTE para CONCLUIDO
+//PUT http://localhost:8080/api/transactions/10
+//Content-Type: application/json
+
+//{
+  //"amount": 1450.75,
+  //"type": "DESPESA",
+  //"status": "CONCLUIDO"
+//}
+
+### Teste do DELETE: Apagar a conta de luz da CPFL (ID 15)
+//DELETE http://localhost:8080/api/transactions/15
