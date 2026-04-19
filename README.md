@@ -56,21 +56,25 @@ Antes de iniciar, tenha instalado na máquina:
 
 ```bash
 git clone https://github.com/SEU-USUARIO/financial-api.git
-Acesse a pasta do projeto:
+
+2. Acesse a pasta do projeto:
 cd financial-api
-Execute a aplicação:
+
+3. Execute a aplicação:
 mvn spring-boot:run
-A API estará disponível em:
+
+4. A API estará disponível em:
 http://localhost:8080
-📌 Objetivo do Projeto
+
+### Objetivo do Projeto
 
 Mais do que apenas criar endpoints, este projeto foi desenvolvido para reforçar fundamentos importantes como:
 
-construção de APIs REST
-arquitetura em camadas
-validação de dados
-organização de código
-integração com banco de dados
-boas práticas no ecossistema Spring
+**construção de APIs REST**
+**arquitetura em camadas**
+**validação de dados**
+**organização de código**
+**integração com banco de dados**
+**boas práticas no ecossistema Spring**
 
 Projeto desenvolvido como parte dos estudos práticos em Java e desenvolvimento back-end.
