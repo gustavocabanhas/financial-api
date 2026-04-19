@@ -57,16 +57,18 @@ Antes de iniciar, tenha instalado na máquina:
 ```bash
 git clone https://github.com/SEU-USUARIO/financial-api.git
 ```
-
+```bash
 2. Acesse a pasta do projeto:
 cd financial-api
-
+```
+```bash
 3. Execute a aplicação:
 mvn spring-boot:run
-
+```
+```bash
 4. A API estará disponível em:
 http://localhost:8080
-
+```
 ### Objetivo do Projeto
 
 Mais do que apenas criar endpoints, este projeto foi desenvolvido para reforçar fundamentos importantes como:
