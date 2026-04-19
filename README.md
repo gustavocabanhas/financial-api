@@ -55,7 +55,7 @@ Antes de iniciar, tenha instalado na máquina:
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/SEU-USUARIO/financial-api.git
+git clone https://github.com/SEU-USUARIO/financial-api.git```
 
 2. Acesse a pasta do projeto:
 cd financial-api
