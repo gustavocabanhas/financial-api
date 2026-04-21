@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@SuppressWarnings("unused") // Silencia avisos de métodos usados apenas via API
+@SuppressWarnings("unused")
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
@@ -45,13 +45,10 @@ public class TransactionService {
     }
 
     // --- CÁLCULO DE SALDO ---
-
-    // Para a API: Calcula o saldo total de tudo no banco
     public BalanceDTO calculateBalance() {
         return calculateBalance(transactionRepository.findAll());
     }
 
-    // Para o Dashboard: Estático para processar a lista filtrada sem avisos da IDE
     public static BalanceDTO calculateBalance(List<Transaction> transactions) {
         double receitas = 0.0;
         double despesas = 0.0;
@@ -66,18 +63,28 @@ public class TransactionService {
         return new BalanceDTO(receitas, despesas, receitas - despesas);
     }
 
-    // --- ESCRITA E MANUTENÇÃO ---
+    // --- ESCRITA E MANUTENÇÃO (CORRIGIDO) ---
     public Transaction createTransaction(TransactionDTO dto) {
+        // LÓGICA DE DESCRIÇÃO AUTOMÁTICA
+        // Se a descrição vier nula ou vazia, montamos a frase padrão
+        String descricaoFinal = (dto.getDescription() == null || dto.getDescription().isBlank())
+                ? "Novo(a) " + dto.getType().toLowerCase() + " de R$ " + dto.getAmount()
+                : dto.getDescription();
+
         Transaction t = Transaction.builder()
                 .amount(dto.getAmount())
+                .description(descricaoFinal) // SALVA A FRASE NO BANCO
                 .type(dto.getType())
                 .status(dto.getStatus() != null ? dto.getStatus() : "COMPLETED")
                 .userEmail(dto.getUserEmail())
                 .createdAt(LocalDateTime.now())
                 .build();
+
         Transaction saved = transactionRepository.save(t);
+
         try {
-            notificationClient.solicitarNotificacao(dto.getUserEmail(), "Nova transação registrada.");
+            // ENVIA A MESMA FRASE PARA A NOTIFICAÇÃO
+            notificationClient.solicitarNotificacao(dto.getUserEmail(), descricaoFinal);
         } catch (Exception e) {
             System.err.println("Aviso: Serviço de notificação offline.");
         }
@@ -91,8 +98,11 @@ public class TransactionService {
     public Transaction updateTransaction(Long id, TransactionDTO dto) {
         Transaction existente = transactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada"));
+
         if (dto.getAmount() != null) existente.setAmount(dto.getAmount());
         if (dto.getType() != null) existente.setType(dto.getType());
+        if (dto.getDescription() != null) existente.setDescription(dto.getDescription());
+
         return transactionRepository.save(existente);
     }
 

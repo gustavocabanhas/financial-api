@@ -13,13 +13,29 @@
         .bg-gradient-danger { background: linear-gradient(45deg, #dc3545, #bd2130); }
         .bg-gradient-dark { background: linear-gradient(45deg, #212529, #343a40); }
         .filter-select-column { border: none; background: transparent; font-weight: bold; cursor: pointer; outline: none; }
+
+        /* Ajuste de Padding e Distribuição do Grid */
+        .table th, .table td {
+            padding-top: 12px !important;
+            padding-bottom: 12px !important;
+        }
+        .col-tipo { width: 160px; }
+        .col-valor { width: 160px; text-align: left; }
+        .col-data { width: 200px; }
+
+        .text-truncate-custom {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body class="bg-light">
 
 <div class="container mt-5 pb-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0 text-dark">📊 Dashboard Financeiro v5.3</h2>
+        <h2 class="fw-bold m-0 text-dark">📊 Dashboard Financeiro v5.5</h2>
         <div>
             <a th:href="@{/dashboard}" class="btn btn-sm btn-outline-dark me-2">Sincronizar BI</a>
             <span class="badge bg-dark">SQL Server | Java 26</span>
@@ -58,24 +74,27 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                 <tr>
-                    <th>
+                    <th class="col-tipo">
                         <label for="typeFilter" class="visually-hidden">Filtrar Tipo</label>
-                        <select id="typeFilter" class="filter-select-column"
-                                onchange="filtrarPorTipo(this.value)">
+                        <select id="typeFilter" class="filter-select-column" onchange="filtrarPorTipo(this.value)">
                             <option value="">TIPO (TODOS)</option>
                             <option value="RECEITA" th:selected="${type == 'RECEITA'}">RECEITA</option>
                             <option value="DESPESA" th:selected="${type == 'DESPESA'}">DESPESA</option>
                         </select>
                     </th>
-                    <th>Valor</th>
-                    <th>Data/Hora</th>
+                    <th class="ps-4">Descrição</th>
+                    <th class="col-valor">Valor</th>
+                    <th class="col-data">Data/Hora</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="t : ${transactionList}">
-                    <td><span th:text="${t.type}" th:class="${t.type == 'RECEITA' ? 'badge bg-success' : 'badge bg-danger'}"></span></td>
-                    <td class="fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(t.amount, 1, 'POINT', 2, 'COMMA')}"></td>
-                    <td class="text-muted" th:text="${#temporals.format(t.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                    <td class="col-tipo">
+                        <span th:text="${t.type}" th:class="${t.type == 'RECEITA' ? 'badge bg-success' : 'badge bg-danger'}"></span>
+                    </td>
+                    <td class="ps-4 text-muted small text-truncate-custom" th:text="${t.description != null ? t.description : 'Sem descrição'}"></td>
+                    <td class="col-valor fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(t.amount, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <td class="col-data text-muted" th:text="${#temporals.format(t.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -89,7 +108,6 @@
         const url = new URL(window.location.href);
         url.searchParams.set('type', valor);
         url.searchParams.set('page', '0');
-        // Garantir que as datas do form também vão na URL
         url.searchParams.set('startDate', document.getElementById('startDate').value);
         url.searchParams.set('endDate', document.getElementById('endDate').value);
         window.location.href = url.href;
