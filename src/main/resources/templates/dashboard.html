@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI Financial | Java & Spring Boot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container { position: relative; height: 260px; width: 100%; }
+        .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .bg-gradient-success { background: linear-gradient(45deg, #198754, #28a745); }
+        .bg-gradient-danger { background: linear-gradient(45deg, #dc3545, #bd2130); }
+        .bg-gradient-dark { background: linear-gradient(45deg, #212529, #343a40); }
+        .filter-select-column { border: none; background: transparent; font-weight: bold; cursor: pointer; outline: none; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5 pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0 text-dark">📊 Dashboard Financeiro v5.3</h2>
+        <div>
+            <a th:href="@{/dashboard}" class="btn btn-sm btn-outline-dark me-2">Sincronizar BI</a>
+            <span class="badge bg-dark">SQL Server | Java 26</span>
+        </div>
+    </div>
+
+    <div class="row mb-4 text-center">
+        <div class="col-md-4"><div class="card text-white bg-gradient-success py-4"><h6>RECEITAS</h6><h2 th:text="'R$ ' + ${#numbers.formatDecimal(balance.totalReceitas, 1, 'POINT', 2, 'COMMA')}"></h2></div></div>
+        <div class="col-md-4"><div class="card text-white bg-gradient-danger py-4"><h6>DESPESAS</h6><h2 th:text="'R$ ' + ${#numbers.formatDecimal(balance.totalDespesas, 1, 'POINT', 2, 'COMMA')}"></h2></div></div>
+        <div class="col-md-4"><div class="card text-white bg-gradient-dark py-4"><h6>SALDO ATUAL</h6><h2 th:text="'R$ ' + ${#numbers.formatDecimal(balance.saldoTotal, 1, 'POINT', 2, 'COMMA')}"></h2></div></div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4"><div class="card h-100 p-3 shadow-sm"><h6>Distribuição</h6><div class="chart-container"><canvas id="donutChart"></canvas></div></div></div>
+        <div class="col-md-8"><div class="card h-100 p-3 shadow-sm"><h6>Volumetria (HH:mm)</h6><div class="chart-container"><canvas id="lineChart"></canvas></div></div></div>
+    </div>
+
+    <div class="card p-3 mb-4 shadow-sm bg-white">
+        <form th:action="@{/dashboard}" method="get" class="row g-3 align-items-end">
+            <input type="hidden" name="type" th:value="${type}">
+            <div class="col-md-3">
+                <label for="startDate" class="small fw-bold text-muted">Data Inicial</label>
+                <input type="date" id="startDate" name="startDate" th:value="${startDate}" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-3">
+                <label for="endDate" class="small fw-bold text-muted">Data Final</label>
+                <input type="date" id="endDate" name="endDate" th:value="${endDate}" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2"><button type="submit" class="btn btn-dark btn-sm w-100">🔍 Filtrar Período</button></div>
+            <div class="col-md-2"><a th:href="@{/dashboard}" class="btn btn-outline-secondary btn-sm w-100">Limpar</a></div>
+        </form>
+    </div>
+
+    <div class="card p-4 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>
+                        <label for="typeFilter" class="visually-hidden">Filtrar Tipo</label>
+                        <select id="typeFilter" class="filter-select-column"
+                                onchange="filtrarPorTipo(this.value)">
+                            <option value="">TIPO (TODOS)</option>
+                            <option value="RECEITA" th:selected="${type == 'RECEITA'}">RECEITA</option>
+                            <option value="DESPESA" th:selected="${type == 'DESPESA'}">DESPESA</option>
+                        </select>
+                    </th>
+                    <th>Valor</th>
+                    <th>Data/Hora</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="t : ${transactionList}">
+                    <td><span th:text="${t.type}" th:class="${t.type == 'RECEITA' ? 'badge bg-success' : 'badge bg-danger'}"></span></td>
+                    <td class="fw-bold" th:text="'R$ ' + ${#numbers.formatDecimal(t.amount, 1, 'POINT', 2, 'COMMA')}"></td>
+                    <td class="text-muted" th:text="${#temporals.format(t.createdAt, 'dd/MM/yyyy HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function filtrarPorTipo(valor) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('type', valor);
+        url.searchParams.set('page', '0');
+        // Garantir que as datas do form também vão na URL
+        url.searchParams.set('startDate', document.getElementById('startDate').value);
+        url.searchParams.set('endDate', document.getElementById('endDate').value);
+        window.location.href = url.href;
+    }
+
+    const ChartJS = window['Chart'];
+    const transactions = /*[[${transactions}]]*/ [];
+    const balance = /*[[${balance}]]*/ { totalReceitas: 0, totalDespesas: 0 };
+
+    new ChartJS(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: { labels: ['Receitas', 'Despesas'], datasets: [{ data: [balance.totalReceitas, balance.totalDespesas], backgroundColor: ['#198754', '#dc3545'] }] },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+
+    const timeGroups = {};
+    transactions.forEach(t => {
+        let raw = t['createdAt'];
+        if (!raw) return;
+        let d = Array.isArray(raw) ? new Date(raw[0], raw[1]-1, raw[2], raw[3], raw[4]) : (typeof raw === 'object' ? new Date(raw['year'], raw['monthValue']-1, raw['dayOfMonth'], raw['hour'], raw['minute']) : new Date(raw.toString().replace(' ', 'T')));
+        if (d && !isNaN(d.getTime())) {
+            const key = d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+            timeGroups[key] = (timeGroups[key] || 0) + 1;
+        }
+    });
+
+    const labels = Object.keys(timeGroups).sort();
+    new ChartJS(document.getElementById('lineChart'), {
+        type: 'line',
+        data: { labels: labels.length > 0 ? labels : ['Sem dados'], datasets: [{ label: 'Volume', data: labels.map(l => timeGroups[l]), borderColor: '#0d6efd', backgroundColor: 'rgba(13, 110, 253, 0.1)', fill: true, tension: 0.3 }] },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

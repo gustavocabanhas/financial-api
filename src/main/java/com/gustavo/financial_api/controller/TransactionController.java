@@ -21,9 +21,9 @@ public class TransactionController {
     }
 
     @PostMapping
-    public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionDTO dto) {
-        Transaction novaTransacao = transactionService.createTransaction(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaTransacao);
+    public ResponseEntity<List<Transaction>> createTransactions(@RequestBody List<TransactionDTO> dtos) {
+        List<Transaction> novas = transactionService.createTransactionsBulk(dtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novas);
     }
 
     @GetMapping
@@ -31,21 +31,15 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getAllTransactions());
     }
 
+    @GetMapping("/balance")
+    public ResponseEntity<BalanceDTO> getBalance() {
+        // Agora chama o método de instância que criamos no Service
+        return ResponseEntity.ok(transactionService.calculateBalance());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody TransactionDTO dto) {
-        Transaction transacaoAtualizada = transactionService.updateTransaction(id, dto);
-        return ResponseEntity.ok(transacaoAtualizada);
-    }
-
-    @GetMapping("/balance")
-    public ResponseEntity<BalanceDTO> getBalance() {
-        BalanceDTO balance = transactionService.calculateBalance();
-        return ResponseEntity.ok(balance);
     }
 }

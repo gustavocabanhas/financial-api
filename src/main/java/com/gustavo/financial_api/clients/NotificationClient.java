@@ -4,6 +4,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
+import com.gustavo.financial_api.dto.NotificationLogDTO;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Collections;
 
 @Component
 public class NotificationClient {
@@ -31,6 +35,22 @@ public class NotificationClient {
         } catch (Exception e) {
             // Se o outro projeto estiver desligado, o financeiro não trava, apenas avisa o erro
             System.err.println(">>> [ERRO INTEGRAÇÃO] Falha ao conectar com Notification Service: " + e.getMessage());
+        }
+
+    }
+
+    public List<NotificationLogDTO> buscarHistoricoNotificacoes() {
+        try {
+            String url = "http://localhost:8080/api/notifications";
+            NotificationLogDTO[] historico = restTemplate.getForObject(url, NotificationLogDTO[].class);
+
+            if (historico != null) {
+                return Arrays.asList(historico);
+            }
+            return Collections.emptyList();
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar notificações: " + e.getMessage());
+            return Collections.emptyList();
         }
     }
 }
