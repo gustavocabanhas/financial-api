@@ -49,6 +49,29 @@ Seguindo as melhores práticas de **Clean Code** e **Arquitetura em Camadas**:
 - **Maven 3.9+**.
 - Instância do **Microsoft SQL Server** configurada.
 
+### 🗄️ Estrutura do Banco de Dados (Tabela: `transactions`)
+
+| Coluna | Tipo | Descrição | Restrições |
+| :--- | :--- | :--- | :--- |
+| `id` | BIGINT | Identificador único da transação | Primary Key (Identity) |
+| `amount` | DECIMAL(18,2) | Valor monetário da operação | NOT NULL |
+| `type` | VARCHAR(10) | Tipo da transação (RECEITA/DESPESA) | NOT NULL |
+| `status` | VARCHAR(20) | Status (Ex: COMPLETED, PENDING) | NOT NULL |
+| `user_email` | VARCHAR(255) | Email do proprietário da transação | NOT NULL |
+| `created_at` | DATETIME2 | Data e hora do registro | NOT NULL |
+
+### 📜 Script SQL para Criação
+```sql
+CREATE TABLE transactions (
+    id BIGINT PRIMARY KEY IDENTITY(1,1),
+    amount DECIMAL(18,2) NOT NULL,
+    type VARCHAR(10) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
+    created_at DATETIME2 NOT NULL
+);
+```
+
 ### Passos para Início
 
 1. **Clone o repositório:**
