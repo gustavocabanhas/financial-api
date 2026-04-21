@@ -23,4 +23,6 @@ public class Transaction {
     private String status;
 
     private LocalDateTime createdAt;
+
+    private String userEmail;
 }

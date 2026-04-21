@@ -1,5 +1,6 @@
 package com.gustavo.financial_api.service;
 
+import com.gustavo.financial_api.clients.NotificationClient;
 import com.gustavo.financial_api.dto.BalanceDTO;
 import com.gustavo.financial_api.dto.TransactionDTO;
 import com.gustavo.financial_api.model.Transaction;
@@ -13,9 +14,12 @@ import java.util.List;
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final NotificationClient notificationClient;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    // Construtor corrigido para evitar o erro de "assigned to itself"
+    public TransactionService(TransactionRepository transactionRepository, NotificationClient notificationClient) {
         this.transactionRepository = transactionRepository;
+        this.notificationClient = notificationClient;
     }
 
     public Transaction createTransaction(TransactionDTO dto) {
@@ -23,9 +27,18 @@ public class TransactionService {
                 .amount(dto.getAmount())
                 .type(dto.getType())
                 .status(dto.getStatus() != null ? dto.getStatus() : "PENDING")
+                .userEmail(dto.getUserEmail()) // <-- Salva o e-mail na transação
                 .createdAt(LocalDateTime.now())
                 .build();
-        return transactionRepository.save(transaction);
+
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
+        String mensagem = "Nova transação de " + savedTransaction.getType() + " no valor de R$ " + savedTransaction.getAmount();
+
+        // AGORA FICOU DINÂMICO:
+        notificationClient.solicitarNotificacao(dto.getUserEmail(), mensagem);
+
+        return savedTransaction;
     }
 
     public List<Transaction> getAllTransactions() {

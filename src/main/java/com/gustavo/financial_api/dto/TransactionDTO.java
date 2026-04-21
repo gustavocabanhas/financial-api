@@ -10,4 +10,6 @@ public class TransactionDTO {
     private String type;
 
     private String status;
+
+    private String userEmail;
 }
