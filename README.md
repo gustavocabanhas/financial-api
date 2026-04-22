@@ -107,12 +107,12 @@ mvn spring-boot:run
 | `POST` | `/api/transactions` | API: Cria uma nova transação (Suporta Bulk Import) |
 | `DELETE` | `/api/transactions/{id}` | API: Remove um registro específico do banco |
 
-### 🚀 Próximos Passos (Roadmap)
+### 🚀 Próximos Passos (Roadmap v7.0)
 
-[x] Dashboard BI: Volumetria por hora e gráficos dinâmicos.
+[x] **Dashboard BI:** Unificação visual e volumetria por hora.
 
-[ ] Segurança: Implementação de Autenticação via Spring Security & JWT.
+[ ] **Segurança & Auth:** Página de login e controle de permissões (AuthLevel).
 
-[ ] Relatórios: Exportação de fluxos de caixa em formato PDF e Excel.
+[ ] **Relatórios:** Exportação de fluxos de caixa em formato PDF e Excel.
 
 **Desenvolvido por Gustavo Cabanhas** Analista de Negócios em TI focado em construir soluções escaláveis e arquiteturas modernas.
