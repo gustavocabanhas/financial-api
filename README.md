@@ -1,33 +1,39 @@
-# Financial API Core - v5.5 🚀
+# Financial API Core - v6.7 📊🚀
 
-Este projeto é uma **API REST robusta** desenvolvida em Java para o gerenciamento de transações financeiras. O foco desta aplicação é oferecer uma base sólida para sistemas de Business Intelligence (BI), com alta performance em consultas no **Microsoft SQL Server** e integração entre microserviços.
+Este projeto é uma **API REST & Dashboard BI** robusta desenvolvida em Java para o gerenciamento e visualização de transações financeiras. A aplicação evoluiu de uma simples API para uma solução completa de monitoramento, com dashboards interativos, volumetria por hora e alta performance em consultas no **Microsoft SQL Server**.
 
-Diferente de uma aplicação básica, este projeto implementa lógicas de filtragem avançada por período e categoria, além de suportar operações em lote (Bulk) e integração com serviços de notificação.
+Diferente de uma aplicação básica, este projeto implementa lógicas de Business Intelligence, tratamento resiliente de datas e uma interface de usuário otimizada para análise de dados em tempo real.
 
 ---
 
 ## 🛠 Tecnologias Utilizadas
 
-O ecossistema do projeto foi construído com ferramentas de nível corporativo:
+O ecossistema do projeto foi construído e atualizado com ferramentas de nível corporativo:
 
-- **Java 26 (LTS)** – Utilizando as versões mais recentes para performance e segurança.
-- **Spring Boot 3.x** – Framework base para a construção de microserviços.
+- **Java 26 (LTS)** – Utilizando as versões mais recentes para máxima performance e segurança.
+- **Spring Boot 4.0.5** – Framework base para a construção de microserviços e MVC.
+- **Jackson 3.1.0** – Serialização JSON avançada com suporte a objetos complexos de data (LocalDateTime).
+- **Thymeleaf** – Engine de renderização de templates para o Dashboard dinâmico.
+- **Chart.js** – Renderização de gráficos de volumetria e distribuição no lado do cliente.
 - **Spring Data JPA** – Abstração para persistência de dados e consultas otimizadas.
 - **Microsoft SQL Server** – Banco de dados relacional para armazenamento seguro e escalável.
 - **Lombok** – Automação de códigos repetitivos (Boilerplate).
-- **Feign Client / RestTemplate** – Comunicação assíncrona com serviço de notificações (Porta 8080).
 - **Maven** – Gerenciamento de dependências e automação de build.
 
 ---
 
-## 📈 Funcionalidades Principais (BI Ready)
+## 📈 Funcionalidades de BI (v6.7 Update)
 
-A API foi otimizada para servir dashboards de visualização de dados:
+A aplicação foi otimizada para servir como uma central de visualização de dados financeiros:
 
-* **Filtros de BI:** Engine de busca personalizada que permite filtrar transações por **Data Inicial/Final** e **Tipo (RECEITA/DESPESA)** diretamente via banco de dados.
-* **Operações Bulk:** Suporte para criação de múltiplas transações em uma única requisição JSON (ideal para importação de extratos).
-* **Cálculo de Saldo Dinâmico:** Algoritmo para processar receitas, despesas e saldo total com base nos filtros aplicados.
-* **Integração de Mensageria:** Disparo de notificações automáticas para o serviço de alerta ao registrar novas movimentações.
+* **Dashboard Interativo:** Painel visual com cards de Saldo Total, Receitas e Despesas calculados dinamicamente.
+* **Volumetria por Hora:** Gráfico de linha que agrupa transações por hora cheia, ideal para identificar picos de movimentação financeira.
+* **Distribuição de Categoria:** Gráfico Donut para análise rápida da proporção entre Receitas e Despesas.
+* **Engine de Filtros Avançada:**
+    * **Estado Inicial:** Carrega automaticamente os dados do dia atual (**Today**).
+    * **Limpar Filtros:** Reseta os campos de busca visualmente, permitindo uma nova exploração de dados.
+    * **Filtro por Tipo:** Dropdown integrado diretamente ao grid para alternar entre RECEITA/DESPESA.
+* **Grid de Transações Pro:** Tabela com paginação numérica (Anterior/Próximo) e seletor de quantidade de registros por página (10, 25, 50, 100) integrado ao cabeçalho.
 
 ---
 
@@ -35,10 +41,10 @@ A API foi otimizada para servir dashboards de visualização de dados:
 
 Seguindo as melhores práticas de **Clean Code** e **Arquitetura em Camadas**:
 
-1.  **Controller:** Exposição dos endpoints RESTful e tratamento de requisições.
-2.  **Service:** Camada de inteligência onde residem as regras de negócio e cálculos financeiros.
-3.  **Repository:** Interface de comunicação de baixa latência com o SQL Server.
-4.  **DTO (Data Transfer Object):** Segurança e integridade na troca de dados entre Front-end e API.
+1. **Controller:** Exposição de endpoints RESTful e gerenciamento das rotas de visualização (View Controller).
+2. **Service:** Camada de inteligência onde residem as regras de negócio, agregações e cálculos de saldo.
+3. **Repository:** Interface de comunicação de baixa latência com o SQL Server via JPA.
+4. **UI (Frontend):** Interface responsiva construída com Thymeleaf e motor JavaScript resiliente para processamento de dados bi-dimensionais.
 
 ---
 
@@ -47,22 +53,22 @@ Seguindo as melhores práticas de **Clean Code** e **Arquitetura em Camadas**:
 ### Pré-requisitos
 - **Java 26** instalado.
 - **Maven 3.9+**.
-- Instância do **Microsoft SQL Server** configurada.
+- Instância do **Microsoft SQL Server** configurada e rodando.
 
-### 🗄️ Estrutura do Banco de Dados (Tabela: `transactions`)
+### 🗄️ Estrutura do Banco de Dados (Tabela: `tb_transactions`)
 
 | Coluna | Tipo | Descrição | Restrições |
 | :--- | :--- | :--- | :--- |
 | `id` | BIGINT | Identificador único da transação | Primary Key (Identity) |
 | `amount` | DECIMAL(18,2) | Valor monetário da operação | NOT NULL |
-| `type` | VARCHAR(10) | Tipo da transação (RECEITA/DESPESA) | NOT NULL |
+| `type` | VARCHAR(10) | Tipo (RECEITA/DESPESA) | NOT NULL |
 | `status` | VARCHAR(20) | Status (Ex: COMPLETED, PENDING) | NOT NULL |
-| `user_email` | VARCHAR(255) | Email do proprietário da transação | NOT NULL |
+| `user_email` | VARCHAR(255) | Email do proprietário | NOT NULL |
 | `created_at` | DATETIME2 | Data e hora do registro | NOT NULL |
 
 ### 📜 Script SQL para Criação
 ```sql
-CREATE TABLE transactions (
+CREATE TABLE tb_transactions (
     id BIGINT PRIMARY KEY IDENTITY(1,1),
     amount DECIMAL(18,2) NOT NULL,
     type VARCHAR(10) NOT NULL,
@@ -74,13 +80,13 @@ CREATE TABLE transactions (
 
 ### Passos para Início
 
-1. **Clone o repositório:**
+1. **Clone o Repositório**
 ```bash
 git clone [https://github.com/SEU-USUARIO/financial-api.git](https://github.com/SEU-USUARIO/financial-api.git)
 ```
-2. **Configuração de Banco de Dados**
+2. **Configuração do application.properties**
 ```bash
-spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=financial_db
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=db_financial;trustServerCertificate=true
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 ```
@@ -90,19 +96,21 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-📊 **Endpoints da API**
+📊 **Principais Rotas**
+
 | Método | Endpoint | Descrição |
 | :--- | :--- | :--- |
-| `GET` | `/api/transactions` | Lista todas as transações |
-| `POST` | `/api/transactions` | Cria uma nova transação |
-| `DELETE` | `/api/transactions/{id}` | Remove um registro |
+| `GET` | `/dashboard` | **Painel BI Principal (Interface, Gráficos e Filtros)** |
+| `GET` | `/api/transactions` | API: Lista todas as transações (JSON) |
+| `POST` | `/api/transactions` | API: Cria uma nova transação (Suporta Bulk Import) |
+| `DELETE` | `/api/transactions/{id}` | API: Remove um registro específico do banco |
 
-🚀 **Próximos Passos (Roadmap)**
+### 🚀 Próximos Passos (Roadmap)
 
-[ ] **Segurança:** Implementação de Autenticação via Spring Security & JWT.
+[x] Dashboard BI: Volumetria por hora e gráficos dinâmicos.
 
-[ ] **Relatórios:** Exportação de fluxos de caixa em formato PDF e Excel.
+[ ] Segurança: Implementação de Autenticação via Spring Security & JWT.
 
-[ ] **Auditoria:** Logs de rastreabilidade de transações (Data Audit).
+[ ] Relatórios: Exportação de fluxos de caixa em formato PDF e Excel.
 
 **Desenvolvido por Gustavo Cabanhas** Analista de Negócios em TI focado em construir soluções escaláveis e arquiteturas modernas.
