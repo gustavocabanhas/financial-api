@@ -1,8 +1,8 @@
-# Financial API Core - v6.7 📊🚀
+# Financial API Core - v6.9.1 📊🚀
 
-Este projeto é uma **API REST & Dashboard BI** robusta desenvolvida em Java para o gerenciamento e visualização de transações financeiras. A aplicação evoluiu de uma simples API para uma solução completa de monitoramento, com dashboards interativos, volumetria por hora e alta performance em consultas no **Microsoft SQL Server**.
+Este projeto é uma **API REST & Dashboard BI** robusta desenvolvida em Java para o gerenciamento e visualização de transações financeiras. A aplicação evoluiu para uma solução completa de monitoramento, apresentando uma interface unificada, volumetria por hora resiliente e alta performance em consultas no **Microsoft SQL Server**.
 
-Diferente de uma aplicação básica, este projeto implementa lógicas de Business Intelligence, tratamento resiliente de datas e uma interface de usuário otimizada para análise de dados em tempo real.
+Diferente de uma aplicação básica, este projeto implementa lógicas de Business Intelligence, tratamento avançado de objetos JSON e uma interface de usuário otimizada para análise de dados em tempo real com design moderno.
 
 ---
 
@@ -22,18 +22,20 @@ O ecossistema do projeto foi construído e atualizado com ferramentas de nível 
 
 ---
 
-## 📈 Funcionalidades de BI (v6.7 Update)
+## 📈 Funcionalidades de BI (v6.9.1 Update)
 
 A aplicação foi otimizada para servir como uma central de visualização de dados financeiros:
 
-* **Dashboard Interativo:** Painel visual com cards de Saldo Total, Receitas e Despesas calculados dinamicamente.
+* **Dashboard Unificado (New):** KPIs de saldo e gráficos de volumetria agrupados em um container principal (`main-bi-container`), proporcionando uma leitura de dados mais limpa e profissional.
+* **Volumetria Blindada:** Motor JavaScript resiliente que processa datas em múltiplos formatos (Array, Objeto ou String ISO), garantindo a plotagem correta no Chart.js independente da versão do Jackson.
+* **Acessibilidade (WCAG):** Interface em conformidade com normas de acessibilidade, utilizando labels associadas e ocultas para seletores de filtros, garantindo um código limpo e sem alertas em IDEs.
 * **Volumetria por Hora:** Gráfico de linha que agrupa transações por hora cheia, ideal para identificar picos de movimentação financeira.
 * **Distribuição de Categoria:** Gráfico Donut para análise rápida da proporção entre Receitas e Despesas.
 * **Engine de Filtros Avançada:**
     * **Estado Inicial:** Carrega automaticamente os dados do dia atual (**Today**).
     * **Limpar Filtros:** Reseta os campos de busca visualmente, permitindo uma nova exploração de dados.
     * **Filtro por Tipo:** Dropdown integrado diretamente ao grid para alternar entre RECEITA/DESPESA.
-* **Grid de Transações Pro:** Tabela com paginação numérica (Anterior/Próximo) e seletor de quantidade de registros por página (10, 25, 50, 100) integrado ao cabeçalho.
+* **Grid de Transações Pro:** Tabela com paginação numérica (Anterior/Próximo) e seletor de volumetria (10, 25, 50, 100 registros) integrado ao cabeçalho.
 
 ---
 
@@ -75,7 +77,7 @@ CREATE TABLE tb_transactions (
     status VARCHAR(20) NOT NULL,
     user_email VARCHAR(255) NOT NULL,
     created_at DATETIME2 NOT NULL
-);
+)
 ```
 
 ### Passos para Início
